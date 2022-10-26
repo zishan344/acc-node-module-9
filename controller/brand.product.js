@@ -2,9 +2,9 @@ const {
   getBrandsService,
   createBrand,
   getBrandsServiceById,
-
   BrandsServiceUpdateById,
-} = require("../Service/brand.server");
+  deleteBrandById,
+} = require("../Service/brand.service");
 
 exports.createNewBrand = async (req, res) => {
   try {
@@ -67,17 +67,42 @@ exports.updateBrandById = async (req, res) => {
     const { id } = req.params;
     const result = await BrandsServiceUpdateById(id, req.body);
     if (!result.nModified) {
-      res.status(404).json({ status: "fail", message: "couldn't update data" });
+      return res
+        .status(404)
+        .json({ status: "fail", message: "couldn't update data" });
     }
+
     res.status(200).json({
       status: "success",
-      message: "getting data successfully",
+      message: " update data successfully",
       data: result,
     });
   } catch (err) {
     res.status(400).json({
       status: "fail",
-      message: "can't get the data",
+      message: "can't update the data",
+      error: err.message,
+    });
+  }
+};
+exports.deleteBrand = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await deleteBrandById(id);
+    if (!result.deletedCount) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "couldn't delete data" });
+    }
+    res.status(200).json({
+      status: "success",
+      message: " delete data successfully",
+      data: result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: "can't delete the data",
       error: err.message,
     });
   }

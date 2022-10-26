@@ -13,7 +13,7 @@ const categorySchema =
     description: String,
     imageUrl: {
       type: String,
-      validate: [validator.isUrl, "Please provide a valid url"],
+      validate: [validator.isURL, "Please provide a valid url"],
     },
   },
   { timestamps: true });
