@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const { ObjectId } = mongoose.Schema.Types;
-const categorySchema =
-  ({
+const categorySchema = mongoose.Schema(
+  {
     name: {
       type: String,
       required: [true, "please provide a category name"],
@@ -16,6 +16,7 @@ const categorySchema =
       validate: [validator.isURL, "Please provide a valid url"],
     },
   },
-  { timestamps: true });
-const Category = mongoose.createModel("Category", categorySchema);
+  { timestamps: true }
+);
+const Category = mongoose.model("Category", categorySchema);
 module.exports = Category;
