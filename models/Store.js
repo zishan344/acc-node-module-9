@@ -8,16 +8,17 @@ const storeSchema = mongoose.Schema(
       trim: true,
       required: [true, "Please provide a store name"],
       lowercase: true,
+
       enum: {
         values: [
-          "Barishal",
-          "Chattogram",
-          "Dhaka",
-          "Khulna",
-          "Rajshahi",
-          "Rangpur",
-          "Mymensingh",
-          "Sylhet",
+          "barishal",
+          "chattogram",
+          "dhaka",
+          "khulna",
+          "rajshahi",
+          "rangpur",
+          "mymensingh",
+          "sylhet",
         ],
         massage: "{Value} is not a valid name",
       },
@@ -40,4 +41,4 @@ const storeSchema = mongoose.Schema(
   { timestamps: true }
 );
 const Store = mongoose.model("Store", storeSchema);
-exports = Store;
+module.exports = Store;
