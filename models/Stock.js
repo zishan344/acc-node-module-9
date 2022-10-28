@@ -14,7 +14,6 @@ const StockSchema = mongoose.Schema(
       required: [true, "Please provide a brand name"],
       maxLength: [100, "Name is to large"],
       minLength: [100, "Name must be at least 3 characters"],
-      unique: true,
       maxLength: 100,
       lowercase: true,
     },
@@ -27,27 +26,7 @@ const StockSchema = mongoose.Schema(
         messages: ["unit value can't be {VALUE}, must be  kg/liter/pcs/bag"],
       },
     },
-    imageUrls: [
-      {
-        type: String,
-        require: true,
-        validate: {
-          validator: (value) => {
-            if ((!Array, isArray(value))) {
-              return false;
-            }
-            let isValid = true;
-            value.forEach((url) => {
-              if (!validator.isUrl(url)) {
-                isValid = false;
-              }
-            });
-            return isValid;
-          },
-          message: "Please provide a valid  image urls",
-        },
-      },
-    ],
+    imageUrls: [validator.isURL, "Please provide a valid  image urls"],
     category: {
       type: String,
       required: true,
@@ -113,16 +92,13 @@ const StockSchema = mongoose.Schema(
       },
       id: { type: ObjectId, ref: "Supplier" },
     },
+    sellCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   { timeStamps: true }
 );
-StockSchema.pre("save", function (next) {
-  // this
-  consol.log("Before saving data");
-  if (this.quantity === 0) {
-    this.status = "out-of-stock";
-  }
-  next();
-});
 const Stock = mongoose.model("Stock", StockSchema);
 exports = Stock;

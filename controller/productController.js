@@ -1,4 +1,3 @@
-// const { mountpath } = require("../app");
 const {
   gettingAllProduct,
   createProduct,
@@ -9,25 +8,40 @@ const {
 } = require("../Service/Product.services");
 module.exports.getProduct = async (req, res) => {
   try {
-    /* const products = await Product.find({
-        $or: [{ _id: "6332c62ae9b5e1434c05387c" }, { name: "bolboli" }],
-      }); */
-    // const products = await Product.find({ status: { $ne: "out-of-stock" } });
-    // const products = await Product.find({ quantity: { $gte: 100 } });
-    // const products = await Product.find({ name: { $in: ["rice", "dal"] } });
-    // const products = await Product.find({}, "name quantity");
-    // const products = await Product.find({}, "-name -quantity");
-    // const products = await Product.find({}, "-name -quantity").limit(1);
-    /*    const products = await Product.where("name")
-        .equals(/\w/)
-        .where("quantity")
-        .gt(100) 
-        .lt(600)
-        .limit(2)
-        .sort({ quantity: -1 }); */
-    // const products = await Product.findById("6332c9b8c20ca91ef380b832");
-    // const products = await Product.find({});
-    const products = await gettingAllProduct();
+    let filters = { ...req.query };
+    // stock?sortBy=price=500name=chal&location=dhaka
+    // sort, page,limit->exclude
+    const excludeFields = ["sort", "page", "limit"];
+    excludeFields.forEach((field) => delete filters[field]);
+    // gt,lt,gte,lte
+    let filterString = JSON.stringify(filters);
+    filterString = filterString.replace(
+      /\b(gt\gte\lt\lte)\b/g,
+      (match) => `$${match}`
+    );
+    filters = JSON.parse(filterString);
+    const queries = {};
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      queries.sortBy = sortBy;
+    }
+    if (req.query.fields) {
+      const fieldBy = req.query.fields.split(",").join(" ");
+      queries.fieldBy = fieldBy;
+    }
+    if (req.query.page) {
+      const { page = 1, limit = 10 } = req.query;
+      // 50 product
+      // page 1->1-10
+      // page 2->2-20,
+      //page 3-> 21-30  ->page 3 -> skip 1-20 ->3-1->2*10
+      //page 4-> 21-30  ->page 4 -> skip 1-30 ->4-1->3*10
+      //page 5 -> 41-50
+      const skip = (page - 1) * parseInt(limit);
+      queries.skip = skip;
+      queries.limit = limit;
+    }
+    const products = await gettingAllProduct(filters, queries);
     res.status(200).json({
       status: "success",
       message: "getting Data Successfully",

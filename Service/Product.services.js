@@ -1,11 +1,15 @@
 const Product = require("../models/Product");
 const Brand = require("../models/Brand");
 
-exports.gettingAllProduct = async () => {
-  const product = await Product.find({});
+exports.gettingAllProduct = async (filters, queries) => {
+  const product = await Product.find(filters)
+    .skip(queries.skip)
+    .limit(queries.limit)
+    .select(queries.fieldBy)
+    .sort(queries.sortBy);
   return product;
 };
-exports.gettingAllProduct = async (id) => {
+exports.gettingSingleProduct = async (id) => {
   const product = await Product.findOne({ _id: id });
   return product;
 };
