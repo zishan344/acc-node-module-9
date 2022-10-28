@@ -3,7 +3,7 @@ const validator = require("validator");
 const { ObjectId } = mongoose.Schema.Types;
 const StockSchema = mongoose.Schema(
   {
-    ProductId: {
+    productId: {
       type: ObjectId,
       required: true,
       ref: "Product",
@@ -13,8 +13,7 @@ const StockSchema = mongoose.Schema(
       trim: true,
       required: [true, "Please provide a brand name"],
       maxLength: [100, "Name is to large"],
-      minLength: [100, "Name must be at least 3 characters"],
-      maxLength: 100,
+      minLength: [3, "Name must be at least 3 characters"],
       lowercase: true,
     },
     description: { type: String, required: true },
@@ -26,19 +25,24 @@ const StockSchema = mongoose.Schema(
         messages: ["unit value can't be {VALUE}, must be  kg/liter/pcs/bag"],
       },
     },
-    imageUrls: [validator.isURL, "Please provide a valid  image urls"],
+    imageURLs: [
+      {
+        type: String,
+        required: true,
+        validate: [validator.isURL, "wrong url"],
+      },
+    ],
     category: {
       type: String,
       required: true,
     },
     brand: {
-      type: String,
-      required: true,
-    },
-    id: {
-      type: ObjectId,
-      ref: "Brand",
-      required: true,
+      name: { type: String, required: true },
+      id: {
+        type: ObjectId,
+        ref: "Brand",
+        required: true,
+      },
     },
     price: {
       type: Number,
@@ -66,14 +70,14 @@ const StockSchema = mongoose.Schema(
         lowercase: true,
         enum: {
           values: [
-            "Barishal",
-            "Chattogram",
-            "Dhaka",
+            "barishal",
+            "chattogram",
+            "dhaka",
             "Khulna",
-            "Rajshahi",
-            "Rangpur",
-            "Mymensingh",
-            "Sylhet",
+            "rajshahi",
+            "rangpur",
+            "mymensingh",
+            "sylhet",
           ],
           massage: "{Value} is not a valid name",
         },
@@ -101,4 +105,4 @@ const StockSchema = mongoose.Schema(
   { timeStamps: true }
 );
 const Stock = mongoose.model("Stock", StockSchema);
-exports = Stock;
+module.exports = Stock;
