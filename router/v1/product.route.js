@@ -1,9 +1,13 @@
 const express = require("express");
-
+const multer = require("multer");
 const router = express.Router();
 const productController = require("../../controller/productController");
-module.exports = router;
-
+const uploader = require("../../middleware/uploader");
+router.post(
+  "/file-upload",
+  uploader.array("image"),
+  productController.fileUpload
+);
 //
 router.route("/bulk_update").patch(productController.bulkUpdateProduct);
 router.route("/bulk_delete").delete(productController.bulkDeleteProduct);

@@ -1,3 +1,4 @@
+// const { mountpath } = require("../app");
 const {
   gettingAllProduct,
   createProduct,
@@ -63,7 +64,7 @@ module.exports.createProducts = async (req, res) => {
     // const result = await Product.create(req.body);
     // const result = await product.save();
     const result = await createProduct(req.body);
-    const { _id: productId, brand } = result;
+
     res.status(200).json({
       status: "success",
       message: "Data Inserted successfully",
@@ -159,5 +160,12 @@ exports.bulkDeleteProduct = async (req, res) => {
       message: "Couldn't delete product product",
       error: error.message,
     });
+  }
+};
+exports.fileUpload = async (req, res) => {
+  try {
+    res.status(200).json(req.files);
+  } catch (err) {
+    res.status(404).json({ status: "fail", error: err.message });
   }
 };
