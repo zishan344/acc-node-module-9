@@ -7,5 +7,5 @@ router.route("/login").post(users.loginUser);
 router.route("/login").post(users.loginUser);
 router.route("/me").get(verifyToken, users.getMe);
 router.route("/:id").delete(users.deleteUserById);
-
+router.route("/signup/confirmation/:token").get(users.confirmationUser);
 module.exports = router;

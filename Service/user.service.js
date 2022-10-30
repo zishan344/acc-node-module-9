@@ -5,8 +5,10 @@ exports.createUser = async (data) => {
   return user;
 };
 exports.findUserByEmail = async (email) => {
-  console.log(email);
   return await User.findOne({ email });
+};
+exports.findUserByToken = async (token) => {
+  return await User.findOne({ confirmationToken: token });
 };
 exports.deleteUser = async (id) => {
   const deleteUser = await User.deleteOne({ _id: id });
