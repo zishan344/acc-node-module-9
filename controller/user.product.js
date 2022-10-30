@@ -5,7 +5,7 @@ const {
   findUserByEmail,
   deleteUser,
 } = require("../Service/user.service");
-const { sendMailWithMailGun } = require("../utils/email");
+const { sendMailWithGmail } = require("../utils/email");
 
 const { generateToken } = require("../utils/token");
 exports.createNewUser = async (req, res) => {
@@ -16,7 +16,7 @@ exports.createNewUser = async (req, res) => {
       subject: "Verify your Account",
       text: "Thank You",
     };
-    sendMailWithMailGun(mailData);
+    sendMailWithGmail(mailData);
     res.status(200).json({
       status: "success",
       message: "successfully create user",
