@@ -6,5 +6,6 @@ router.route("/signup").post(users.createNewUser);
 router.route("/login").post(users.loginUser);
 router.route("/login").post(users.loginUser);
 router.route("/me").get(verifyToken, users.getMe);
+router.route("/:id").delete(users.deleteUserById);
 
 module.exports = router;

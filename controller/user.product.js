@@ -1,11 +1,22 @@
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { promisify } = require("util");
-const { createUser, findUserByEmail } = require("../Service/user.service");
+
+const {
+  createUser,
+  findUserByEmail,
+  deleteUser,
+} = require("../Service/user.service");
+const { sendMailWithMailGun } = require("../utils/email");
+
 const { generateToken } = require("../utils/token");
 exports.createNewUser = async (req, res) => {
   try {
     const user = await createUser(req.body);
+    const mailData = {
+      to: [user.email],
+      subject: "Verify your Account",
+      text: "Thank You",
+    };
+    sendMailWithMailGun(mailData);
     res.status(200).json({
       status: "success",
       message: "successfully create user",
@@ -86,5 +97,18 @@ exports.getMe = async (req, res) => {
       message: "couldn't get the data",
       error: error.message,
     });
+  }
+};
+exports.deleteUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteU = await deleteUser(id);
+    res.status(200).json({
+      status: "success",
+      message: "deleteUser successfully",
+      data: deleteU,
+    });
+  } catch (err) {
+    res.status(400).json({ status: "fail", error: err.message });
   }
 };
